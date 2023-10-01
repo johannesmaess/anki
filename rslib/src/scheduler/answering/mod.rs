@@ -309,7 +309,8 @@ impl Collection {
             self.add_leech_tag(card.note_id)?;
         }
 
-        self.update_queues_after_answering_card(&card, timing)
+        // self.update_queues_after_answering_card(&card, timing) // please don't
+        self.update_queues_after_answering_any_card(&card, timing)
     }
 
     fn maybe_bury_siblings(&mut self, card: &Card, config: &DeckConfig) -> Result<()> {
