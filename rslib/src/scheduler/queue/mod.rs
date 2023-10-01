@@ -235,6 +235,26 @@ impl Collection {
         Ok(())
     }
 
+    pub(crate) fn update_queues_after_answering_any_card(
+        &mut self,
+        card: &Card,
+        timing: SchedTimingToday,
+    ) -> Result<()> {
+        if let Some(queues) = &mut self.state.card_queues {
+            print!("Removing card {}...", card.id);
+            if queues.remove_intraday_learning_card(card.id).is_some()
+            || queues.remove_main_learning_card(card.id).is_some()
+            {
+                queues.maybe_requeue_learning_card(card, timing);
+            } else {
+                println!("Card found in neither queue.")
+            }
+        } else {
+            // we currently allow the queues to be empty for unit tests
+        }
+        Ok(())
+    }
+
     /// Get the card queues, building if necessary.
     pub(crate) fn get_queues(&mut self) -> Result<&mut CardQueues> {
         let deck = self.get_current_deck()?;
